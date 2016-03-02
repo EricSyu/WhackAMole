@@ -2,6 +2,8 @@ package homework1.group.whackamole;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +28,12 @@ public class MainActivity extends AppCompatActivity {
     private Button btn_start;
 
     private int score = 0;
+
+
+    private static final int SOUND_COUNT = 2;
+    private int hit;
+    private int start;
+    private SoundPool soundPool;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +67,12 @@ public class MainActivity extends AppCompatActivity {
         imgBtn_mole9.setOnClickListener(imgBtnLst);
 
         setImgBtnEnabled(false);
+
+        this.soundPool = new SoundPool(SOUND_COUNT, AudioManager.STREAM_MUSIC, 0);
+
+        this.hit = this.soundPool.load(this, R.raw.hit, 1);
+        this.start = this.soundPool.load(this, R.raw.start, 1);
+
     }
 
     @Override
@@ -87,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
     private View.OnClickListener startBtnLst = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            soundPool.play(start, 1, 1, 0, 0, 1);
             btn_start.setVisibility(View.INVISIBLE);
 
             new CountDownTimer(30000,1000){
@@ -116,28 +131,32 @@ public class MainActivity extends AppCompatActivity {
                     textView_Time.setText("Time: 0 s");
 
                     new AlertDialog.Builder(MainActivity.this)
-                            .setTitle(R.string.dialog_title)
-                            .setMessage("獲得分數: "+score+" 分")
-                            .setCancelable(false)
-                            .setPositiveButton(R.string.dialog_positiveBtn, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    btn_start.setVisibility(View.VISIBLE);
-                                    textView_Time.setText(R.string.timer_init);
-                                    textView_Score.setText(R.string.score_init);
-                                    setImgBtnEnabled(false);
+                        .setTitle(R.string.dialog_title)
+                        .setMessage("獲得分數: "+score+" 分")
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.dialog_positiveBtn, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                btn_start.setVisibility(View.VISIBLE);
+                                textView_Time.setText(R.string.timer_init);
+                                textView_Score.setText(R.string.score_init);
+                                setImgBtnEnabled(false);
 
-                                    score = 0;
-                                }
-                            }).show();
+                                score = 0;
+                            }
+                        }).show();
                 }
             }.start();
         }
     };
 
+
     private View.OnClickListener imgBtnLst = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+
+            soundPool.play(hit, 1, 1, 0, 0, 1);
+
             score += 5;
             textView_Score.setText("Score: "+score+" 分");
             ImageButton clickImgBtn = (ImageButton) v;
