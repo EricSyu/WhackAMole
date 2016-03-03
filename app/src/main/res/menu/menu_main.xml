@@ -7,5 +7,10 @@
         android:icon="@drawable/question_mark"
         android:title="@string/menu_description"
         app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/menu_level"
+        android:title="@string/menu_level"
+        app:showAsAction="ifRoom" />
+
 
 </menu>

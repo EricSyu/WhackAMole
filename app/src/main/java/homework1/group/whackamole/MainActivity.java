@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btn_start;
 
     private int score = 0;
+    private int shimao = 1;
 
 
     private static final int SOUND_COUNT = 2;
@@ -95,6 +96,25 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }).show();
         }
+        else if(item.getItemId()==R.id.menu_level){
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle(R.string.menu_level)
+                    .setMessage(R.string.menu_level_msg)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.dialog_easy, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            shimao = 1;
+                        }
+                    })
+                    .setNegativeButton(R.string.dialog_hard, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            shimao = 5;
+                        }
+
+                    }).show();
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -111,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                     setImgBtnEnabled(false);
 
                     Random random = new Random();
-                    int num = random.nextInt(5)+1;
+                    int num = random.nextInt(shimao)+1;
 
                     HashSet<Integer> randomSet = new HashSet<Integer>();
                     for(int i=0; i<num; ++i){
@@ -129,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onFinish() {
                     textView_Time.setText("Time: 0 s");
-
+                    shimao = 1;
                     new AlertDialog.Builder(MainActivity.this)
                         .setTitle(R.string.dialog_title)
                         .setMessage("獲得分數: "+score+" 分")
@@ -180,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
         switch (num)
         {
             case 1:imgBtn_mole1.setEnabled(b);
-            break;
+                break;
             case 2:imgBtn_mole2.setEnabled(b);
                 break;
             case 3:imgBtn_mole3.setEnabled(b);
@@ -199,5 +219,4 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
-
 }
