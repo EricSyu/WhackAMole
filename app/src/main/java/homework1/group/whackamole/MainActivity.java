@@ -69,10 +69,10 @@ public class MainActivity extends AppCompatActivity {
 
         setImgBtnEnabled(false);
 
-        this.soundPool = new SoundPool(SOUND_COUNT, AudioManager.STREAM_MUSIC, 0);
+        soundPool = new SoundPool(SOUND_COUNT, AudioManager.STREAM_MUSIC, 0);
 
-        this.hit = this.soundPool.load(this, R.raw.hit, 1);
-        this.start = this.soundPool.load(this, R.raw.start, 1);
+        hit = soundPool.load(this, R.raw.hit, 1);
+        start = soundPool.load(this, R.raw.start, 1);
 
     }
 
@@ -124,52 +124,59 @@ public class MainActivity extends AppCompatActivity {
             soundPool.play(start, 1, 1, 0, 0, 1);
             btn_start.setVisibility(View.INVISIBLE);
 
-            new CountDownTimer(30000,1000){
-                @Override
-                public void onTick(long millisUntilFinished) {
-                    textView_Time.setText("Time: "+(millisUntilFinished/1000)+" s");
-                    setImgBtnEnabled(false);
-
-                    Random random = new Random();
-                    int num = random.nextInt(shimao)+1;
-
-                    HashSet<Integer> randomSet = new HashSet<Integer>();
-                    for(int i=0; i<num; ++i){
-                        int n = 0;
-                        do {
-                            n = random.nextInt(9)+1;
-                        }while (!randomSet.add(n));
-                    }
-
-                    for(int i:randomSet){
-                        setImgBtnEnabled(i,true);
-                    }
-                }
-
-                @Override
-                public void onFinish() {
-                    textView_Time.setText("Time: 0 s");
-                    shimao = 1;
-                    new AlertDialog.Builder(MainActivity.this)
-                        .setTitle(R.string.dialog_title)
-                        .setMessage("獲得分數: "+score+" 分")
-                        .setCancelable(false)
-                        .setPositiveButton(R.string.dialog_positiveBtn, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                btn_start.setVisibility(View.VISIBLE);
-                                textView_Time.setText(R.string.timer_init);
-                                textView_Score.setText(R.string.score_init);
-                                setImgBtnEnabled(false);
-
-                                score = 0;
-                            }
-                        }).show();
-                }
-            }.start();
+            timer.start();
         }
     };
 
+    CountDownTimer timer = new CountDownTimer(30000,1000){
+        @Override
+        public void onTick(long millisUntilFinished) {
+            textView_Time.setText("Time: "+(millisUntilFinished/1000)+" s");
+            setImgBtnEnabled(false);
+
+            Random random = new Random();
+            int num = random.nextInt(shimao)+1;
+
+            HashSet<Integer> randomSet = new HashSet<Integer>();
+            for(int i=0; i<num; ++i){
+                int n = 0;
+                do {
+                    n = random.nextInt(9)+1;
+                }while (!randomSet.add(n));
+            }
+
+            for(int i:randomSet){
+                setImgBtnEnabled(i,true);
+            }
+        }
+
+        @Override
+        public void onFinish() {
+            textView_Time.setText("Time: 0 s");
+            shimao = 1;
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle(R.string.dialog_title)
+                    .setMessage("獲得分數: "+score+" 分")
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.dialog_positiveBtn, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            btn_start.setVisibility(View.VISIBLE);
+                            textView_Time.setText(R.string.timer_init);
+                            textView_Score.setText(R.string.score_init);
+                            setImgBtnEnabled(false);
+
+                            score = 0;
+                        }
+                    }).show();
+        }
+    };
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        timer.cancel();
+    }
 
     private View.OnClickListener imgBtnLst = new View.OnClickListener() {
         @Override
