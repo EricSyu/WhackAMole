@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onFinish() {
             textView_Time.setText("Time: 0 s");
-            shimao = 1;
+
             new AlertDialog.Builder(MainActivity.this)
                     .setTitle(R.string.dialog_title)
                     .setMessage("獲得分數: "+score+" 分")
@@ -167,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
                             setImgBtnEnabled(false);
 
                             score = 0;
+                            shimao = 1;
                         }
                     }).show();
         }
@@ -176,6 +177,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         timer.cancel();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        btn_start.setVisibility(View.VISIBLE);
+        textView_Time.setText(R.string.timer_init);
+        textView_Score.setText(R.string.score_init);
+        setImgBtnEnabled(false);
+        score = 0;
+        shimao = 1;
     }
 
     private View.OnClickListener imgBtnLst = new View.OnClickListener() {
